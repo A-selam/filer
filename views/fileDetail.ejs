@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Detail</title>
+    <style>
+      /* Colors */
+      :root {
+        --primary-color: #2c3e50; /* Dark blue-grey */
+        --primary-shade: #34495e; /* Lighter shade of dark blue-grey */
+        --secondary-color: #e74c3c; /* Red for emphasis */
+        --button-color: #3498db; /* Blue for buttons */
+        --button-hover: #2980b9; /* Darker blue for hover */
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: var(--primary-shade);
+        color: #fff;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .logo {
+        font-size: 2em;
+        margin: 0;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        margin: 0 15px;
+        font-weight: bold;
+      }
+
+      nav a:hover {
+        text-decoration: underline;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 1em;
+        color: white;
+        background-color: var(--button-color);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: var(--button-hover);
+      }
+
+      main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 40px;
+        flex-grow: 1;
+      }
+
+      .file-detail-card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        text-align: center;
+        width: 350px;
+        color: var(--primary-color); /* Dark blue-grey text */
+      }
+
+      .file-detail-card h1 {
+        font-size: 1.6em;
+        margin: 15px 0;
+        color: var(--primary-color);
+      }
+
+      .file-detail-card a {
+        display: inline-block;
+        margin: 10px 0;
+        padding: 12px 18px;
+        color: white;
+        background-color: var(--secondary-color); /* Red for links */
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+
+      .file-detail-card a:hover {
+        background-color: #c0392b; /* Darker red */
+      }
+
+      /* Position profile dialog next to profile name */
+      #open-profile-dialog-btn {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+      }
+
+      /* Sticky footer */
+      footer {
+        background-color: var(--primary-color);
+        color: white;
+        text-align: center;
+        padding: 10px;
+        position: sticky;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1 class="logo">Filer</h1>
+      <nav>
+        <a href="/">Home</a>
+      </nav>
+      <button id="open-profile-dialog-btn"><%= user.name %></button>
+    </header>
+    <main>
+      <div class="file-detail-card">
+        <h1><%= file.title %></h1>
+        <h1><%= file.size %></h1>
+        <h1><%= file.createdAt %></h1>
+        <a href="/file/download/<%=`${file.path}`%>">Download file</a>
+        <a href="/file/delete/<%=`${file.id}`%>">Delete file</a>
+      </div>
+    </main>
+    <footer>
+      <p>&copy; 2024 Your Company</p>
+    </footer>
+  </body>
+</html>

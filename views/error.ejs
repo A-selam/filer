@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Error Page</title>
+    <style>
+      /* Colors */
+      :root {
+        --primary-color: #2c3e50; /* Dark blue-grey */
+        --primary-shade: #34495e; /* Lighter shade of dark blue-grey */
+        --secondary-color: #e74c3c; /* Red for emphasis */
+        --button-color: #3498db; /* Blue for buttons */
+        --button-hover: #2980b9; /* Darker blue for hover */
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: var(--primary-shade); /* Consistent background */
+        color: #fff; /* Light text for contrast */
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      h1 {
+        font-size: 3em;
+        color: var(--secondary-color); /* Consistent red color */
+        margin-bottom: 0.5em;
+      }
+
+      h3 {
+        font-size: 1.5em;
+        color: #fff; /* White text for subheading */
+        margin-bottom: 1.5em;
+      }
+
+      button {
+        padding: 12px 25px;
+        font-size: 1em;
+        color: #fff;
+        background-color: var(--button-color); /* Consistent blue */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: var(--button-hover); /* Consistent hover color */
+      }
+
+      a {
+        text-decoration: none; /* No underline for links */
+        color: #fff; /* White color for links */
+      }
+
+      /* Sticky footer */
+      footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+        background-color: var(--primary-color); /* Footer color */
+        color: #fff;
+      }
+
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 2em;
+        }
+
+        h3 {
+          font-size: 1.2em;
+        }
+
+        button {
+          font-size: 0.9em;
+          padding: 10px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Error</h1>
+    <h3><%= message %></h3>
+    <a href="/">
+      <button>Go Home</button>
+    </a>
+
+    <footer>
+      <p>&copy; 2024 Your Company</p>
+    </footer>
+  </body>
+</html>

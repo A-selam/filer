@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Filer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4; /* Light background color */
+      }
+
+      header {
+        background-color: #007bff; /* Primary color */
+        color: white;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .logo {
+        font-size: 1.5em;
+        font-weight: bold;
+      }
+
+      a {
+        color: white; /* Make links white */
+        text-decoration: none; /* Remove underlining */
+        margin-left: 15px;
+      }
+
+      a:hover {
+        text-decoration: underline; /* Underline on hover */
+      }
+
+      main {
+        padding: 40px 20px;
+        max-width: 400px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      label {
+        margin: 10px 0 5px;
+        color: #555;
+      }
+
+      input[type="email"],
+      input[type="password"] {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      input[type="submit"] {
+        background-color: #007bff; /* Primary color */
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+      }
+
+      footer {
+        text-align: center;
+        padding: 20px;
+        background-color: #007bff; /* Primary color for footer */
+        color: white;
+        position: fixed; /* Make footer sticky */
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1 class="logo">Filer</h1>
+      <a href="/">Home</a>
+      <a href="/user/signup">Sign up</a>
+    </header>
+    <main>
+      <h2>Login</h2>
+      <form action="/user/login" method="post">
+        <label for="email">Email:</label>
+        <input required name="email" id="email" type="email" />
+        <label for="password">Password:</label>
+        <input required name="password" id="password" type="password" />
+        <input type="submit" value="Login" />
+      </form>
+    </main>
+    <footer>&copy; 2024 Filer. All rights reserved.</footer>
+  </body>
+</html>

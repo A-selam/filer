@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Folders and Files</title>
+    <style>
+      /* Define primary colors */
+      :root {
+        --primary-color: #2c3e50; /* Dark blue-grey */
+        --secondary-color: #3498db; /* Primary blue */
+        --hover-color: #2980b9; /* Hover blue */
+        --light-bg: #f0f4f8; /* Light grey-blue background */
+        --text-color: #333; /* Dark grey text */
+        --header-bg: #2c3e50; /* Dark blue-grey for header */
+        --white: white;
+        --table-border: #ddd; /* Table border */
+        --light-primary: #e3f2fd; /* Light blue */
+        --footer-bg: #2c3e50; /* Footer background matches header */
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: var(--light-bg);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: var(--header-bg);
+        color: var(--white);
+      }
+
+      .logo {
+        font-size: 2em;
+        margin: 0;
+      }
+
+      nav a {
+        color: var(--white);
+        text-decoration: none;
+        margin: 0 15px;
+        font-weight: bold;
+      }
+
+      nav a:hover {
+        text-decoration: underline;
+      }
+
+      /* Removed 'Welcome Back' from the header */
+      button {
+        padding: 10px 20px;
+        font-size: 1em;
+        color: var(--white);
+        background-color: var(--secondary-color);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: var(--hover-color);
+      }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px;
+      }
+
+      table {
+        width: 100%;
+        max-width: 800px;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--table-border);
+        padding: 10px;
+        text-align: left;
+      }
+
+      th {
+        background-color: var(--light-primary);
+        color: var(--text-color);
+      }
+
+      .folder-row {
+        background-color: var(--light-primary);
+      }
+
+      .file-row {
+        background-color: var(--white);
+        transition: background-color 0.3s;
+      }
+
+      .file-row:hover {
+        background-color: var(--light-primary); /* Table row hover effect */
+      }
+
+      .no-files {
+        text-align: center;
+        font-style: italic;
+      }
+
+      dialog {
+        padding: 20px;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 400px;
+      }
+
+      dialog h2 {
+        margin: 0 0 10px;
+      }
+
+      dialog button {
+        margin-top: 10px;
+      }
+
+      /* Profile dialog positioned next to the username */
+      #profile-dialog {
+        position: absolute;
+        top: 60px;
+        right: 20px;
+      }
+
+      /* Centered dialogs */
+      #upload-file-dialog {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: var(--white);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+
+      /* Footer sticks to the bottom of the page */
+      footer {
+        text-align: center;
+        padding: 20px;
+        background-color: var(--footer-bg);
+        color: var(--white);
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1 class="logo">Filer</h1>
+      <nav>
+        <a href="/">Home</a>
+      </nav>
+      <button id="open-profile-dialog-btn"><%= user.name %></button>
+    </header>
+    <main>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (folder.file.length > 0) { %> <% folder.file.map(file => { %>
+          <tr class="file-row">
+            <td><a href="/file/<%= file.id %>"><%= file.title %></a></td>
+            <td><%= file.createdAt %></td>
+          </tr>
+          <% }) %> <% } else { %>
+          <tr>
+            <td colspan="2" class="no-files">No files uploaded so far.</td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+
+      <button id="open-upload-file-dialog-btn">Upload New File</button>
+      <a href="/folder/delete/<%= folder.id %>">
+        <button>Delete Folder</button>
+      </a>
+    </main>
+
+    <!-- Dialog for uploading file -->
+    <dialog id="upload-file-dialog">
+      <form
+        action="/file/new/<%= `${folder.id}` %>"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <h2>Upload New File</h2>
+        <label for="newFile">File</label>
+        <input type="file" name="newFile" id="newFile" />
+        <input type="submit" value="Add" />
+        <button type="button" id="close-upload-file-dialog-btn">Cancel</button>
+      </form>
+    </dialog>
+
+    <!-- Profile dialog -->
+    <dialog id="profile-dialog">
+      <a href="/user/logout">Log out</a>
+      <a href="/user/delete/<%= user.id %>">Delete account</a>
+      <button id="close-profile-dialog-btn">X</button>
+    </dialog>
+
+    <footer>&copy; 2024 Filer. All rights reserved.</footer>
+
+    <script src="/scripts.js"></script>
+  </body>
+</html>
