@@ -1,5 +1,9 @@
-const path = require("path");
+const paths = require("path");
+
+const fs = require("fs");
+
 const timeFormat = require("../config/timeFormat");
+const supabaseFunctions = require("../config/services/supabaseFunctions");
 
 const fileModels = require("../models/fileModels");
 
@@ -11,15 +15,52 @@ async function postFile(req, res) {
   try {
     const { originalname, path, size } = req.file;
     const { id } = req.user;
+    const filePath = paths.join(__dirname, "/../", path);
+
     if (req.params.id) {
       const folderId = req.params.id || null;
-      await fileModels.postFile(originalname, path, size, id, Number(folderId));
+      const uploadResponse = await supabaseFunctions.uploadFile(
+        "file_uploader",
+        req.file.originalname,
+        filePath
+      );
+
+      // Save file details to database
+      await fileModels.postFile(
+        originalname,
+        uploadResponse.fullPath,
+        size,
+        id,
+        Number(folderId)
+      );
+
+      // Delete the file after successful upload and DB save
+      fs.unlinkSync(filePath);
+
       res.redirect("/");
     } else {
-      await fileModels.postFile(originalname, path, size, id);
+      const uploadResponse = await supabaseFunctions.uploadFile(
+        "file_uploader",
+        req.file.originalname,
+        filePath
+      );
+
+      // Save file details to database
+      await fileModels.postFile(
+        originalname,
+        uploadResponse.fullPath,
+        size,
+        id
+      );
+
+      // Delete the file after successful upload and DB save
+      fs.unlinkSync(filePath);
+
       res.redirect("/");
     }
   } catch (error) {
+    console.log(error);
+
     res.status(500).render("error", {
       message: "Failed to upload file, try again later.",
     });
@@ -69,9 +110,43 @@ async function downloadFile(req, res) {
   }
 
   try {
-    const { repo, tempname } = req.params;
-    res.download(path.join(__dirname, "/../", repo, tempname));
+    const { repo, tempname } = req.params; // repo is the bucket, tempname is the file name
+
+    // Download the file from Supabase
+    const { data, error } = await supabaseFunctions.downloadFile(
+      repo,
+      tempname
+    );
+
+    // Check if there's an error or if data is missing
+    if (error) {
+      console.error("Supabase download error: ", error);
+      return res.status(500).render("error", {
+        message: "Failed to download file, try again later.",
+      });
+    }
+
+    if (!data) {
+      return res.status(404).render("error", {
+        message: "File not found.",
+      });
+    }
+
+    // Log to see what is being returned
+    // console.log("File data from Supabase: ", data);
+
+    // Convert Blob to ArrayBuffer and then to Buffer
+    const arrayBuffer = await data.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Set headers for the file download
+    res.setHeader("Content-Disposition", `attachment; filename="${tempname}"`);
+    res.setHeader("Content-Type", data.type || "application/octet-stream");
+
+    // Send the file as a buffer
+    res.send(buffer);
   } catch (error) {
+    console.error("Download file error: ", error);
     res.status(500).render("error", {
       message: "Failed to download file, try again later.",
     });
@@ -85,9 +160,35 @@ async function deleteFile(req, res) {
 
   try {
     const { id } = req.params;
+
+    // Retrieve file details (e.g., filename) from the database
+    const file = await fileModels.getFile(Number(id));
+    if (!file) {
+      return res.status(404).render("error", {
+        message: "File not found.",
+      });
+    }
+
+    const { path } = file; // Assuming `filePath` contains the full path or filename stored in Supabase
+
+    // Delete the file from Supabase storage
+    const { error: supabaseError } =
+      await supabaseFunctions.deleteFileFromSupabase("file_uploader", path);
+
+    if (supabaseError) {
+      console.error("Supabase delete error: ", supabaseError);
+      return res.status(500).render("error", {
+        message: "Failed to delete file from storage, try again later.",
+      });
+    }
+
+    // Delete the file record from the local database
     await fileModels.deleteFile(Number(id));
+
+    // Redirect to home page after successful deletion
     res.redirect("/");
   } catch (error) {
+    console.error("File deletion error: ", error);
     res.status(500).render("error", {
       message: "Failed to delete file, try again later.",
     });

@@ -26,13 +26,13 @@ model User {
 
 model File {
   id          Int      @id @default(autoincrement())
-  title       String? 
+  title       String?  @unique
   path        String   
   size        Int
   createdAt   DateTime @default(now())
-  owner       User     @relation(fields: [ownerId], references: [id])
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId     Int
-  folder      Folder?   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folder      Folder?   @relation(fields: [folderId], references: [id], onDelete: SetNull)
   folderId    Int?
 
   @@map("files")
@@ -42,7 +42,7 @@ model Folder{
   id          Int     @id @default(autoincrement())
   name        String
   file        File[]
-  owner       User    @relation(fields: [ownerId], references: [id])
+  owner       User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId     Int
 
   @@map("folders")
