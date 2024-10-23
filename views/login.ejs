@@ -13,7 +13,7 @@
       }
 
       header {
-        background-color: #007bff; /* Primary color */
+        background-color: #2c3e50; /* Primary color */
         color: white;
         padding: 10px;
         display: flex;
@@ -68,7 +68,7 @@
       }
 
       input[type="submit"] {
-        background-color: #007bff; /* Primary color */
+        background-color: #2c3e50; /* Primary color */
         color: white;
         border: none;
         padding: 10px;
@@ -84,7 +84,7 @@
       footer {
         text-align: center;
         padding: 20px;
-        background-color: #007bff; /* Primary color for footer */
+        background-color: #2c3e50; /* Primary color for footer */
         color: white;
         position: fixed; /* Make footer sticky */
         bottom: 0;
@@ -104,7 +104,13 @@
         <label for="email">Email:</label>
         <input required name="email" id="email" type="email" />
         <label for="password">Password:</label>
-        <input required name="password" id="password" type="password" />
+        <input
+          required
+          name="password"
+          id="password"
+          type="password"
+          minlength="8"
+        />
         <input type="submit" value="Login" />
       </form>
     </main>

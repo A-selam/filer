@@ -1,6 +1,10 @@
 const bcrypt = require("bcryptjs");
 const userModels = require("../models/userModels");
-const { deleteUserFiles } = require("../config/services/supabaseFunctions");
+const {
+  deleteUserFiles,
+  deleteFolderFiles,
+} = require("../config/services/supabaseFunctions");
+const { getUserFoldersByUserId } = require("../models/folderModels");
 
 async function getSignUpForm(req, res) {
   res.render("signup");
@@ -45,6 +49,15 @@ async function deleteUser(req, res) {
 
   const { id } = req.params;
   try {
+    const userFolders = await getUserFoldersByUserId(req.user.id);
+    if (userFolders) {
+      userFolders.map(async (folder) => {
+        await deleteFolderFiles(
+          "file_uploader",
+          `user${req.user.id}/${folder.name}`
+        );
+      });
+    }
     await deleteUserFiles("file_uploader", `user${id}`);
     await userModels.deleteUser(Number(id));
     res.redirect("/");

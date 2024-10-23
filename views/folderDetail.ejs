@@ -112,6 +112,10 @@
         font-style: italic;
       }
 
+      .action_btns {
+        margin: 10px auto;
+      }
+
       dialog {
         padding: 20px;
         border: none;
@@ -164,7 +168,6 @@
       <nav>
         <a href="/">Home</a>
       </nav>
-      <button id="open-profile-dialog-btn"><%= user.name %></button>
     </header>
     <main>
       <table>
@@ -188,9 +191,11 @@
         </tbody>
       </table>
 
-      <button id="open-upload-file-dialog-btn">Upload New File</button>
+      <button class="action_btns" id="open-upload-file-dialog-btn">
+        Upload New File
+      </button>
       <a href="/folder/delete/<%= folder.id %>">
-        <button>Delete Folder</button>
+        <button class="action_btns">Delete Folder</button>
       </a>
     </main>
 

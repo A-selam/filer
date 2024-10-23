@@ -39,6 +39,30 @@ async function getFoldersByFolderId(id) {
   }
 }
 
+async function getFolderNameByFolderId(id) {
+  try {
+    return await prisma.folder.findUnique({
+      where: { id },
+      select: { name: true },
+    });
+  } catch (error) {
+    console.error("error retrieving folder name by folder ID:", error);
+    throw new Error("Failed to add to folder.");
+  }
+}
+
+async function getUserFoldersByUserId(userId) {
+  try {
+    return await prisma.folder.findMany({
+      where: { ownerId: userId },
+      select: { name: true },
+    });
+  } catch (error) {
+    console.error("Error retrieving folders with user ID:", error);
+    throw new Error("Faild to delete user.");
+  }
+}
+
 async function deleteFolder(id) {
   try {
     return await prisma.folder.delete({
@@ -55,4 +79,6 @@ module.exports = {
   createFolder,
   getFoldersByFolderId,
   deleteFolder,
+  getFolderNameByFolderId,
+  getUserFoldersByUserId,
 };

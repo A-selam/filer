@@ -24,7 +24,7 @@ async function postFile(title, path, size, ownerId, folderId = null) {
       },
     });
   } catch (error) {
-    console.error("Error posting file:", error);
+    console.error("Error posting file:", error.message);
     throw new Error("Failed to post file");
   }
 }

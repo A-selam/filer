@@ -6,22 +6,25 @@ const timeFormat = require("../config/timeFormat");
 const supabaseFunctions = require("../config/services/supabaseFunctions");
 
 const fileModels = require("../models/fileModels");
+const { getFolderNameByFolderId } = require("../models/folderModels");
 
 async function postFile(req, res) {
   if (!req.isAuthenticated()) {
     return res.redirect("/user/login");
   }
-
+  let filePath = "";
   try {
     const { originalname, path, size } = req.file;
     const { id } = req.user;
-    const filePath = paths.join(__dirname, "/../", path);
+    filePath = paths.join(__dirname, "/../", path);
 
     if (req.params.id) {
       const folderId = req.params.id;
+      const folderName = await getFolderNameByFolderId(Number(folderId));
       const uploadResponse = await supabaseFunctions.uploadFile(
         "file_uploader",
         `user${id}`,
+        folderName.name,
         req.file.originalname,
         filePath
       );
@@ -43,6 +46,7 @@ async function postFile(req, res) {
       const uploadResponse = await supabaseFunctions.uploadFile(
         "file_uploader",
         `user${id}`,
+        ".",
         req.file.originalname,
         filePath
       );
@@ -61,7 +65,13 @@ async function postFile(req, res) {
       res.redirect("/");
     }
   } catch (error) {
-    console.log(error);
+    try {
+      if (filePath != "") {
+        fs.unlinkSync(filePath);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
 
     res.status(500).render("error", {
       message: "Failed to upload file, try again later.",

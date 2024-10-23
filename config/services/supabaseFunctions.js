@@ -6,12 +6,18 @@ async function getBucketDetail() {
   return { data, error };
 }
 
-async function uploadFile(bucketName, userFolder, fileName, filePath) {
+async function uploadFile(
+  bucketName,
+  userFolder,
+  folderName = ".",
+  fileName,
+  filePath
+) {
   const fileStream = fs.createReadStream(filePath);
 
   const { data, error } = await supabase.storage
     .from(bucketName)
-    .upload(`${userFolder}/${fileName}`, fileStream, {
+    .upload(`${userFolder}/${folderName}/${fileName}`, fileStream, {
       cacheControl: "3600",
       upsert: true,
       duplex: "half", // Set the duplex option explicitly
@@ -50,7 +56,7 @@ async function deleteFileFromSupabase(bucket, filePath) {
 async function deleteUserFiles(bucket, userFolder) {
   try {
     const { data: files, error: listError } = await supabase.storage
-      .from("file_uploader") // Your bucket name
+      .from(bucket) // Your bucket name
       .list(userFolder);
 
     if (listError) {
@@ -76,10 +82,40 @@ async function deleteUserFiles(bucket, userFolder) {
   }
 }
 
+async function deleteFolderFiles(bucket, folderName) {
+  try {
+    const { data: files, error: listError } = await supabase.storage
+      .from(bucket) // Your bucket name
+      .list(folderName);
+
+    if (listError) {
+      throw listError; // Handle listing error
+    }
+
+    const deletePromises = files.map(async (file) => {
+      const { error: deleteError } = await supabase.storage
+        .from(bucket)
+        .remove([`${folderName}/${file.name}`]); // Specify the full path
+
+      if (deleteError) {
+        throw deleteError; // Handle deletion error
+      }
+    });
+
+    await Promise.all(deletePromises);
+    console.log(
+      `All files in folder '${folderName}' have been deleted successfully.`
+    );
+  } catch (error) {
+    console.error(`Failed to delete folder '${folderName}': ${error.message}`);
+  }
+}
+
 module.exports = {
   getBucketDetail,
   uploadFile,
   downloadFile,
   deleteFileFromSupabase,
   deleteUserFiles,
+  deleteFolderFiles,
 };

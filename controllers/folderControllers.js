@@ -1,3 +1,4 @@
+const { deleteFolderFiles } = require("../config/services/supabaseFunctions");
 const timeformat = require("../config/timeFormat");
 const folderModels = require("../models/folderModels");
 
@@ -68,6 +69,11 @@ async function deleteFolder(req, res) {
 
   try {
     const { id } = req.params;
+    const folderName = await folderModels.getFolderNameByFolderId(Number(id));
+    await deleteFolderFiles(
+      "file_uploader",
+      `user${req.user.id}/${folderName.name}`
+    );
     await folderModels.deleteFolder(Number(id));
     res.redirect("/");
   } catch (error) {

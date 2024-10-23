@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
     <title>Folders and Files</title>
     <style>
       body {
@@ -132,6 +136,20 @@
         right: 10px;
         top: 70px;
       }
+
+      #profile-dialog a {
+        display: block;
+      }
+
+      #profile-dialog a:nth-child(1) {
+        margin-bottom: 10px;
+      }
+
+      #profile-dialog a:nth-child(2) {
+        margin-bottom: 10px;
+        color: red;
+        line-height: 2;
+      }
     </style>
   </head>
   <body>
@@ -151,7 +169,10 @@
         <tbody>
           <% if(folders.length > 0){ %> <% folders.map(folder => { %>
           <tr class="folder-row">
-            <td><a href="/folder/<%= folder.id %>"><%= folder.name %></a></td>
+            <td>
+              <i class="fa-solid fa-folder"></i>
+              <a href="/folder/<%= folder.id %>"><%= folder.name %></a>
+            </td>
             <td>N/A</td>
           </tr>
           <% }) %> <% } else { %>
@@ -160,7 +181,10 @@
           </tr>
           <% } %> <% if(files.length > 0){ %> <% files.map(file => { %>
           <tr class="file-row">
-            <td><a href="/file/<%= file.id %>"><%= file.title %></a></td>
+            <td>
+              <i class="fa-solid fa-file"></i>
+              <a href="/file/<%= file.id %>"><%= file.title %></a>
+            </td>
             <td><%= file.createdAt %></td>
           </tr>
           <% }) %> <% } else { %>
