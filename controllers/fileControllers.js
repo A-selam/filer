@@ -18,9 +18,10 @@ async function postFile(req, res) {
     const filePath = paths.join(__dirname, "/../", path);
 
     if (req.params.id) {
-      const folderId = req.params.id || null;
+      const folderId = req.params.id;
       const uploadResponse = await supabaseFunctions.uploadFile(
         "file_uploader",
+        `user${id}`,
         req.file.originalname,
         filePath
       );
@@ -41,6 +42,7 @@ async function postFile(req, res) {
     } else {
       const uploadResponse = await supabaseFunctions.uploadFile(
         "file_uploader",
+        `user${id}`,
         req.file.originalname,
         filePath
       );
@@ -174,6 +176,7 @@ async function deleteFile(req, res) {
     // Delete the file from Supabase storage
     const { error: supabaseError } =
       await supabaseFunctions.deleteFileFromSupabase("file_uploader", path);
+    console.log(path);
 
     if (supabaseError) {
       console.error("Supabase delete error: ", supabaseError);

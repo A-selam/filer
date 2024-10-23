@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const userModels = require("../models/userModels");
+const { deleteUserFiles } = require("../config/services/supabaseFunctions");
 
 async function getSignUpForm(req, res) {
   res.render("signup");
@@ -44,6 +45,7 @@ async function deleteUser(req, res) {
 
   const { id } = req.params;
   try {
+    await deleteUserFiles("file_uploader", `user${id}`);
     await userModels.deleteUser(Number(id));
     res.redirect("/");
   } catch (error) {
