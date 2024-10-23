@@ -47,8 +47,6 @@ async function deleteFileFromSupabase(bucket, filePath) {
   const { data, error } = await supabase.storage
     .from(bucket)
     .remove([filePath]);
-  console.log("error" + error);
-  console.log("data " + data);
 
   return { error };
 }
@@ -79,6 +77,7 @@ async function deleteUserFiles(bucket, userFolder) {
     );
   } catch (error) {
     console.error(`Failed to delete folder '${userFolder}': ${error.message}`);
+    throw error;
   }
 }
 
@@ -108,6 +107,7 @@ async function deleteFolderFiles(bucket, folderName) {
     );
   } catch (error) {
     console.error(`Failed to delete folder '${folderName}': ${error.message}`);
+    throw error;
   }
 }
 
